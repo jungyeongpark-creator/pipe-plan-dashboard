@@ -2,6 +2,11 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="/pipe-plan-dashboard/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="조관계획">
+<meta name="theme-color" content="#1a3c5e">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>전 공장 조관계획 통합 대시보드</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -56,6 +61,30 @@
     .chart-grid { grid-template-columns: 1fr 1fr; }
     .two-col { grid-template-columns: 1fr; }
   }
+
+  /* ===== 모바일 반응형 ===== */
+  @media (max-width: 768px) {
+    header { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
+    header h1 { font-size: 15px; }
+    header .meta { text-align: left; font-size: 11px; }
+    .container { padding: 8px; }
+    .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+    .summary-card { padding: 10px 12px; }
+    .summary-card .value { font-size: 20px; }
+    .chart-grid { grid-template-columns: 1fr; gap: 8px; }
+    .chart-card canvas { max-height: 180px; }
+    .two-col { grid-template-columns: 1fr; }
+    .order-grid { grid-template-columns: 1fr; gap: 8px; }
+    .kpi-table { font-size: 10px; }
+    .kpi-table th, .kpi-table td { padding: 4px 5px; }
+    .util-bar-bg { width: 50px; }
+    .section-title { font-size: 13px; }
+  }
+  @media (max-width: 480px) {
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .summary-card .value { font-size: 18px; }
+  }
+
 </style>
 </head>
 <body>
@@ -345,5 +374,16 @@ new Chart(document.getElementById('chartPohangUsage'), {
   }
 });
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/pipe-plan-dashboard/sw.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW error:', e));
+  });
+}
+</script>
+
 </body>
 </html>
