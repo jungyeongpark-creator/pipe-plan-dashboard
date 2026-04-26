@@ -1,6 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="32" fill="#1a3c5e"/>
-  <rect x="24" y="154" width="144" height="10" rx="3" fill="#e67e22"/>
-  <text x="96" y="100" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="bold" font-size="54">SeAH</text>
-  <text x="96" y="128" text-anchor="middle" fill="#a8ccee" font-family="Arial,sans-serif" font-size="20">조관계획</text>
+  <rect width="192" height="192" rx="26" fill="white"/>
+  <rect x="5" y="5" width="182" height="182" rx="21" fill="none" stroke="#1a3c5e" stroke-width="6"/>
+  <text x="96" y="116" text-anchor="middle" fill="#1a3c5e"
+        font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="56">SeAH</text>
+  <!-- 빨간 v: 'e' 위, center x≈78, v 폭 18px, 높이 14px -->
+  <polyline points="69,68 78,82 87,68"
+            stroke="#cc0000" stroke-width="5"
+            fill="none" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
