@@ -1,10 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="26" fill="white"/>
-  <rect x="5" y="5" width="182" height="182" rx="21" fill="none" stroke="#1a3c5e" stroke-width="6"/>
-  <text x="96" y="116" text-anchor="middle" fill="#1a3c5e"
-        font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="56">SeAH</text>
-  <!-- 빨간 v: 'e' 위, center x≈71 (S≈33px → e starts at ~61, e center ~71) -->
-  <polyline points="62,68 71,82 80,68"
-            stroke="#cc0000" stroke-width="5"
-            fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="26" fill="white"/><rect x="5" y="5" width="182" height="182" rx="21" fill="none" stroke="#1a3c5e" stroke-width="6"/><text x="96" y="116" text-anchor="middle" fill="#1a3c5e" font-family="Arial,Helvetica,sans-serif" font-weight="bold" font-size="56">SeAH</text><polyline points="62,66 71,80 80,66" stroke="#cc0000" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
