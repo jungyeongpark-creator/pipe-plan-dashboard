@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="32" fill="#1a3c5e"/>
+  <rect x="24" y="154" width="144" height="10" rx="3" fill="#e67e22"/>
+  <text x="96" y="100" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="bold" font-size="54">SeAH</text>
+  <text x="96" y="128" text-anchor="middle" fill="#a8ccee" font-family="Arial,sans-serif" font-size="20">조관계획</text>
+</svg>
