@@ -10,119 +10,156 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>전 공장 조관계획 통합 대시보드</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Malgun Gothic', sans-serif; background: #f0f2f5; color: #222; font-size: 13px; }
-  header { background: linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%); color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
-  header .meta { font-size: 12px; opacity: 0.85; text-align: right; line-height: 1.6; }
-  .container { max-width: 1600px; margin: 0 auto; padding: 16px; }
-  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
-  .card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-  .summary-card { padding: 14px 18px; text-align: center; border-top: 4px solid #2d6a9f; }
-  .summary-card .label { font-size: 11px; color: #666; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .summary-card .value { font-size: 26px; font-weight: 700; color: #1a3c5e; }
-  .summary-card .sub { font-size: 11px; color: #888; margin-top: 2px; }
-  .summary-card.pohang { border-color: #2d6a9f; }
-  .summary-card.gunsan { border-color: #27ae60; }
-  .summary-card.suncheon { border-color: #e67e22; }
-  .summary-card.total { border-color: #8e44ad; }
-  .section-title { font-size: 15px; font-weight: 700; color: #1a3c5e; padding: 0 0 8px 4px; border-bottom: 2px solid #2d6a9f; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .section-title .badge { background: #2d6a9f; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-  .section-title .badge.green { background: #27ae60; }
-  .section-title .badge.orange { background: #e67e22; }
-  .kpi-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .kpi-table th { background: #1a3c5e; color: #fff; padding: 7px 8px; text-align: center; font-weight: 600; white-space: nowrap; }
-  .kpi-table td { padding: 6px 8px; text-align: center; border-bottom: 1px solid #eee; white-space: nowrap; }
-  .kpi-table tr:hover td { background: #f5f8ff; }
-  .kpi-table .name { font-weight: 700; color: #1a3c5e; }
-  .util-bar { display: flex; align-items: center; gap: 6px; justify-content: center; }
-  .util-bar-bg { width: 70px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
-  .util-bar-fill { height: 100%; border-radius: 5px; }
-  .good { background: #27ae60; }
-  .warn { background: #f39c12; }
-  .low  { background: #e74c3c; }
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-  .chart-card { padding: 14px; }
-  .chart-card canvas { max-height: 220px; }
-  .chart-title { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 10px; text-align: center; }
-  .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 16px; }
-  .section-block { margin-bottom: 16px; }
-  .order-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-  .order-card { padding: 14px; }
-  .order-card .order-count { font-size: 32px; font-weight: 800; color: #1a3c5e; margin: 4px 0; }
-  .order-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 12px; border-bottom: 1px dashed #eee; }
-  .order-row:last-child { border: none; }
-  .order-label { color: #555; }
-  .order-val { font-weight: 700; color: #333; }
-  .factory-section { margin-bottom: 20px; }
-  @media (max-width: 1200px) {
-    .summary-grid { grid-template-columns: repeat(2, 1fr); }
-    .chart-grid { grid-template-columns: 1fr 1fr; }
-    .two-col { grid-template-columns: 1fr; }
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Malgun Gothic', sans-serif; background: #f0f2f5; color: #222; font-size: 13px; }
+header { background: linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%); color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+header h1 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+header .meta { font-size: 12px; opacity: 0.85; text-align: right; line-height: 1.6; }
+.container { max-width: 1600px; margin: 0 auto; padding: 16px; }
 
-  /* ===== 모바일 반응형 ===== */
-  @media (max-width: 768px) {
-    header { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
-    header h1 { font-size: 15px; }
-    header .meta { text-align: left; font-size: 11px; }
-    .container { padding: 8px; }
-    .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
-    .summary-card { padding: 10px 12px; }
-    .summary-card .value { font-size: 20px; }
-    .chart-grid { grid-template-columns: 1fr; gap: 8px; }
-    .chart-card canvas { max-height: 180px; }
-    .two-col { grid-template-columns: 1fr; }
-    .order-grid { grid-template-columns: 1fr; gap: 8px; }
-    .kpi-table { font-size: 10px; }
-    .kpi-table th, .kpi-table td { padding: 4px 5px; }
-    .util-bar-bg { width: 50px; }
-    .section-title { font-size: 13px; }
-  }
-  @media (max-width: 480px) {
-    .summary-grid { grid-template-columns: 1fr 1fr; }
-    .summary-card .value { font-size: 18px; }
-  }
+/* 월 탭 */
+.month-tabs { display: flex; gap: 4px; margin-bottom: 16px; align-items: center; flex-wrap: wrap; }
+.month-tab { padding: 8px 20px; border-radius: 6px 6px 0 0; border: none; cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'Malgun Gothic', sans-serif; background: #cdd8e5; color: #555; transition: all .2s; position: relative; }
+.month-tab.active { background: #1a3c5e; color: #fff; }
+.month-tab.has-data::after { content: '●'; position: absolute; top: 4px; right: 6px; font-size: 7px; color: #27ae60; }
+.month-tab.active.has-data::after { color: #7fdd9f; }
+.month-tab:hover:not(.active) { background: #b0c4d8; }
 
+/* 업로드 버튼 */
+.upload-btn { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.btn-upload { background: #fff; border: 2px dashed #2d6a9f; color: #2d6a9f; padding: 7px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; font-family: 'Malgun Gothic', sans-serif; transition: all .2s; display: flex; align-items: center; gap: 6px; }
+.btn-upload:hover { background: #e8f0fa; }
+.btn-upload input[type=file] { display: none; }
+
+/* 업로드 드롭존 */
+.drop-zone { border: 2px dashed #2d6a9f; border-radius: 10px; padding: 30px; text-align: center; background: #f7faff; margin-bottom: 16px; cursor: pointer; transition: all .2s; }
+.drop-zone.drag-over { background: #ddeeff; border-color: #1a3c5e; }
+.drop-zone.hidden { display: none; }
+.drop-zone-icon { font-size: 36px; margin-bottom: 8px; }
+.drop-zone-title { font-size: 15px; font-weight: 700; color: #1a3c5e; margin-bottom: 4px; }
+.drop-zone-sub { font-size: 12px; color: #888; }
+.drop-zone-month { font-size: 13px; font-weight: 700; color: #2d6a9f; margin-top: 8px; }
+
+/* 파싱 진행 표시 */
+.parse-status { background: #fff; border-radius: 8px; padding: 12px 18px; margin-bottom: 12px; font-size: 12px; color: #555; display: none; border-left: 4px solid #2d6a9f; }
+.parse-status.show { display: block; }
+.parse-status.ok { border-color: #27ae60; color: #27ae60; }
+.parse-status.err { border-color: #e74c3c; color: #e74c3c; }
+
+/* 카드/그리드 */
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.summary-card { padding: 14px 18px; text-align: center; border-top: 4px solid #2d6a9f; }
+.summary-card .label { font-size: 11px; color: #666; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+.summary-card .value { font-size: 26px; font-weight: 700; color: #1a3c5e; }
+.summary-card .sub { font-size: 11px; color: #888; margin-top: 2px; }
+.summary-card.pohang { border-color: #2d6a9f; }
+.summary-card.gunsan { border-color: #27ae60; }
+.summary-card.suncheon { border-color: #e67e22; }
+.summary-card.total { border-color: #8e44ad; }
+.section-title { font-size: 15px; font-weight: 700; color: #1a3c5e; padding: 0 0 8px 4px; border-bottom: 2px solid #2d6a9f; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.section-title .badge { background: #2d6a9f; color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+.section-title .badge.green { background: #27ae60; }
+.section-title .badge.orange { background: #e67e22; }
+.kpi-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.kpi-table th { background: #1a3c5e; color: #fff; padding: 7px 8px; text-align: center; font-weight: 600; white-space: nowrap; }
+.kpi-table td { padding: 6px 8px; text-align: center; border-bottom: 1px solid #eee; white-space: nowrap; }
+.kpi-table tr:hover td { background: #f5f8ff; }
+.kpi-table .name { font-weight: 700; color: #1a3c5e; }
+.util-bar { display: flex; align-items: center; gap: 6px; justify-content: center; }
+.util-bar-bg { width: 70px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+.util-bar-fill { height: 100%; border-radius: 5px; }
+.good { background: #27ae60; }
+.warn { background: #f39c12; }
+.low  { background: #e74c3c; }
+.chart-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.chart-card { padding: 14px; }
+.chart-card canvas { max-height: 220px; }
+.chart-title { font-size: 12px; font-weight: 700; color: #444; margin-bottom: 10px; text-align: center; }
+.section-block { margin-bottom: 16px; }
+.order-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+.order-card { padding: 14px; }
+.order-card .order-count { font-size: 32px; font-weight: 800; color: #1a3c5e; margin: 4px 0; }
+.order-row { display: flex; justify-content: space-between; padding: 3px 0; font-size: 12px; border-bottom: 1px dashed #eee; }
+.order-row:last-child { border: none; }
+.order-label { color: #555; }
+.order-val { font-weight: 700; color: #333; }
+.factory-section { margin-bottom: 20px; }
+
+/* 추세 차트 */
+.trend-section { margin-bottom: 20px; }
+
+/* 탭 콘텐츠 */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+@media (max-width: 1200px) {
+  .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  header { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
+  header h1 { font-size: 15px; }
+  header .meta { text-align: left; font-size: 11px; }
+  .container { padding: 8px; }
+  .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .summary-card .value { font-size: 20px; }
+  .chart-grid { grid-template-columns: 1fr; gap: 8px; }
+  .order-grid { grid-template-columns: 1fr; gap: 8px; }
+  .kpi-table { font-size: 10px; }
+  .kpi-table th, .kpi-table td { padding: 4px 5px; }
+  .util-bar-bg { width: 50px; }
+  .section-title { font-size: 13px; }
+  .month-tabs { gap: 2px; }
+  .month-tab { padding: 6px 12px; font-size: 12px; }
+}
 </style>
 </head>
 <body>
 
 <script>
 // ========================================================
-// DATA SECTION — 이 블록만 매월 갱신 (Edit 도구 사용)
+// 월별 데이터 저장소 (각 월에 데이터 채워넣기)
 // ========================================================
-const DATA = {
-  period: '2026년 4월',
-  baseDate: '2026-03-30',
-  pohang: [
-    { name:'PM22',  availH:375.00, avgH:15.00, days:25, targetProd:45.70, planProd:39.72, machineH:264.38, idleH:110.63, utilRate:70.5, rcFull:5,  rcSize:5, planQty:10500 },
-    { name:'SM11',  availH:37.50,  avgH:7.50,  days:5,  targetProd:12.20, planProd:0.00,  machineH:25.24,  idleH:12.26,  utilRate:67.3, rcFull:1,  rcSize:0, planQty:320   },
-    { name:'PM38',  availH:375.00, avgH:15.00, days:25, targetProd:17.50, planProd:10.77, machineH:278.62, idleH:96.38,  utilRate:74.3, rcFull:5,  rcSize:0, planQty:3000  },
-    { name:'PM51',  availH:375.00, avgH:15.00, days:25, targetProd:51.20, planProd:45.77, machineH:251.25, idleH:123.75, utilRate:67.0, rcFull:8,  rcSize:2, planQty:11500 },
-    { name:'PM53',  availH:375.00, avgH:15.00, days:25, targetProd:73.80, planProd:71.50, machineH:258.75, idleH:116.25, utilRate:69.0, rcFull:7,  rcSize:0, planQty:18500 },
-    { name:'PM116', availH:418.00, avgH:16.08, days:26, targetProd:24.00, planProd:28.00, machineH:367.84, idleH:50.16,  utilRate:88.0, rcFull:0,  rcSize:0, planQty:10300 }
-  ],
-  gunsan: [
-    { name:'PM202', availH:157.50, avgH:7.50,  days:21, targetProd:6.73,  planProd:5.28,  machineH:132.46, idleH:25.04, utilRate:84.1, rcFull:2, rcSize:1, planQty:700  },
-    { name:'PM201', availH:255.00, avgH:15.00, days:17, targetProd:12.30, planProd:11.14, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:4, rcSize:1, planQty:2400 },
-    { name:'PM204', availH:157.50, avgH:7.50,  days:21, targetProd:30.78, planProd:31.09, machineH:128.68, idleH:28.82, utilRate:81.7, rcFull:4, rcSize:0, planQty:4000 },
-    { name:'PM203', availH:255.00, avgH:15.00, days:17, targetProd:15.14, planProd:13.92, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:5, rcSize:0, planQty:3000 }
-  ],
-  suncheon: [
-    { name:'PM461', availH:220.00, avgH:10.00, days:22, targetProd:13.50, planProd:10.49, machineH:143.00, idleH:77.00, utilRate:65.0, rcFull:7, rcSize:0, planQty:1500 },
-    { name:'PM462', availH:252.00, avgH:9.69,  days:26, targetProd:15.50, planProd:12.21, machineH:163.80, idleH:88.20, utilRate:65.0, rcFull:8, rcSize:0, planQty:2000 }
-  ],
-  pohangOrders: { total:414, jokwan:{ ERW:363, JCOE:43, SRM:8 } },
-  pohangUsage:  { '구조용':141, '송유관':87, '재료관':76, '압력배관용':49, '일반배관용':20, '열교환기용':11, '유정용(케이싱)':5, '유정용(튜빙)':4, 'PILE':4, '기타구조용':3 },
-  gunsanOrders: { total:108 },
-  gunsanUsage:  { '압력배관용':44, '일반배관용':33, '구조용원형관':7, '재료관':7, '전선관':6, '연료가스배관용':5, '구조용':2 },
-  suncheonOrders: { total:18 }
+const MONTHS = ['2026년 1월', '2026년 2월', '2026년 3월', '2026년 4월'];
+
+const DATA_STORE = {
+  // 4월 데이터 (기본 탑재)
+  '2026년 4월': {
+    period: '2026년 4월', baseDate: '2026-03-30',
+    pohang: [
+      { name:'PM22',  availH:375.00, avgH:15.00, days:25, targetProd:45.70, planProd:39.72, machineH:264.38, idleH:110.63, utilRate:70.5, rcFull:5,  rcSize:5, planQty:10500 },
+      { name:'SM11',  availH:37.50,  avgH:7.50,  days:5,  targetProd:12.20, planProd:0.00,  machineH:25.24,  idleH:12.26,  utilRate:67.3, rcFull:1,  rcSize:0, planQty:320   },
+      { name:'PM38',  availH:375.00, avgH:15.00, days:25, targetProd:17.50, planProd:10.77, machineH:278.62, idleH:96.38,  utilRate:74.3, rcFull:5,  rcSize:0, planQty:3000  },
+      { name:'PM51',  availH:375.00, avgH:15.00, days:25, targetProd:51.20, planProd:45.77, machineH:251.25, idleH:123.75, utilRate:67.0, rcFull:8,  rcSize:2, planQty:11500 },
+      { name:'PM53',  availH:375.00, avgH:15.00, days:25, targetProd:73.80, planProd:71.50, machineH:258.75, idleH:116.25, utilRate:69.0, rcFull:7,  rcSize:0, planQty:18500 },
+      { name:'PM116', availH:418.00, avgH:16.08, days:26, targetProd:24.00, planProd:28.00, machineH:367.84, idleH:50.16,  utilRate:88.0, rcFull:0,  rcSize:0, planQty:10300 }
+    ],
+    gunsan: [
+      { name:'PM202', availH:157.50, avgH:7.50,  days:21, targetProd:6.73,  planProd:5.28,  machineH:132.46, idleH:25.04, utilRate:84.1, rcFull:2, rcSize:1, planQty:700  },
+      { name:'PM201', availH:255.00, avgH:15.00, days:17, targetProd:12.30, planProd:11.14, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:4, rcSize:1, planQty:2400 },
+      { name:'PM204', availH:157.50, avgH:7.50,  days:21, targetProd:30.78, planProd:31.09, machineH:128.68, idleH:28.82, utilRate:81.7, rcFull:4, rcSize:0, planQty:4000 },
+      { name:'PM203', availH:255.00, avgH:15.00, days:17, targetProd:15.14, planProd:13.92, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:5, rcSize:0, planQty:3000 }
+    ],
+    suncheon: [
+      { name:'PM461', availH:220.00, avgH:10.00, days:22, targetProd:13.50, planProd:10.49, machineH:143.00, idleH:77.00, utilRate:65.0, rcFull:7, rcSize:0, planQty:1500 },
+      { name:'PM462', availH:252.00, avgH:9.69,  days:26, targetProd:15.50, planProd:12.21, machineH:163.80, idleH:88.20, utilRate:65.0, rcFull:8, rcSize:0, planQty:2000 }
+    ],
+    pohangOrders: { total:414, jokwan:{ ERW:363, JCOE:43, SRM:8 } },
+    pohangUsage:  { '구조용':141, '송유관':87, '재료관':76, '압력배관용':49, '일반배관용':20, '열교환기용':11, '유정용(케이싱)':5, '유정용(튜빙)':4, 'PILE':4, '기타구조용':3 },
+    gunsanOrders: { total:108 },
+    gunsanUsage:  { '압력배관용':44, '일반배관용':33, '구조용원형관':7, '재료관':7, '전선관':6, '연료가스배관용':5, '구조용':2 },
+    suncheonOrders: { total:18 }
+  },
+  '2026년 3월': null,
+  '2026년 2월': null,
+  '2026년 1월': null
 };
-// ========================================================
-// END DATA SECTION
-// ========================================================
+
+let activeMonth = '2026년 4월';
+let chartUtil = null, chartPohangJokwan = null, chartPohangUsage = null, chartTrend = null;
 </script>
 
 <header>
@@ -135,96 +172,175 @@ const DATA = {
 
 <div class="container">
 
-  <!-- 요약 카드 -->
-  <div class="summary-grid" style="margin-top:16px;">
-    <div class="summary-card card pohang" id="sumPohang"></div>
-    <div class="summary-card card gunsan" id="sumGunsan"></div>
-    <div class="summary-card card suncheon" id="sumSuncheon"></div>
-    <div class="summary-card card total" id="sumTotal"></div>
+  <!-- 월 탭 + 업로드 버튼 -->
+  <div class="month-tabs" id="monthTabs">
+    <!-- JS로 생성 -->
   </div>
 
-  <!-- 차트 행: 가동율 비교 / 포항 물종 / 군산 용도 -->
-  <div class="chart-grid">
-    <div class="card chart-card">
-      <div class="chart-title">전 공장 설비 가동율 비교 (%)</div>
-      <canvas id="chartUtil"></canvas>
+  <!-- 파싱 상태 -->
+  <div class="parse-status" id="parseStatus"></div>
+
+  <!-- 드롭존 (데이터 없는 탭 선택 시 표시) -->
+  <div class="drop-zone hidden" id="dropZone">
+    <div class="drop-zone-icon">📂</div>
+    <div class="drop-zone-title">Excel 파일을 여기에 드래그하거나 클릭해서 업로드</div>
+    <div class="drop-zone-sub">포항공장 조관계획서.xlsx 파일을 업로드하면 자동으로 파싱됩니다</div>
+    <div class="drop-zone-month" id="dropZoneMonth"></div>
+    <input type="file" id="fileInputDrop" accept=".xlsx,.xls" style="display:none">
+  </div>
+
+  <!-- 데이터 있는 탭의 콘텐츠 -->
+  <div id="dashContent" class="hidden">
+
+    <!-- 요약 카드 -->
+    <div class="summary-grid" style="margin-top:4px;">
+      <div class="summary-card card pohang" id="sumPohang"></div>
+      <div class="summary-card card gunsan" id="sumGunsan"></div>
+      <div class="summary-card card suncheon" id="sumSuncheon"></div>
+      <div class="summary-card card total" id="sumTotal"></div>
     </div>
-    <div class="card chart-card">
-      <div class="chart-title">포항공장 물종 구성</div>
-      <canvas id="chartPohangJokwan"></canvas>
+
+    <!-- 차트 행 -->
+    <div class="chart-grid">
+      <div class="card chart-card">
+        <div class="chart-title">전 공장 설비 가동율 비교 (%)</div>
+        <canvas id="chartUtil"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-title">포항공장 물종 구성</div>
+        <canvas id="chartPohangJokwan"></canvas>
+      </div>
+      <div class="card chart-card">
+        <div class="chart-title">포항공장 용도별 오더 (상위 6)</div>
+        <canvas id="chartPohangUsage"></canvas>
+      </div>
     </div>
-    <div class="card chart-card">
-      <div class="chart-title">포항공장 용도별 오더 (상위 6)</div>
-      <canvas id="chartPohangUsage"></canvas>
+
+    <!-- 포항 KPI -->
+    <div class="factory-section section-block">
+      <div class="section-title">🏗 포항공장 설비 KPI <span class="badge">6 LINE</span></div>
+      <div class="card" style="overflow-x:auto;"><table class="kpi-table" id="tablePohang"></table></div>
+    </div>
+
+    <!-- 군산 KPI -->
+    <div class="factory-section section-block">
+      <div class="section-title">🏗 군산공장 설비 KPI <span class="badge green">4 LINE</span></div>
+      <div class="card" style="overflow-x:auto;"><table class="kpi-table" id="tableGunsan"></table></div>
+    </div>
+
+    <!-- 순천 KPI -->
+    <div class="factory-section section-block">
+      <div class="section-title">🏗 순천공장 설비 KPI <span class="badge orange">2 LINE</span></div>
+      <div class="card" style="overflow-x:auto;"><table class="kpi-table" id="tableSuncheon"></table></div>
+    </div>
+
+    <!-- 오더 현황 -->
+    <div class="section-title">📋 공장별 오더 현황</div>
+    <div class="order-grid">
+      <div class="card order-card" id="orderPohang"></div>
+      <div class="card order-card" id="orderGunsan"></div>
+      <div class="card order-card" id="orderSuncheon"></div>
+    </div>
+
+    <div style="text-align:center;color:#aaa;font-size:11px;padding:12px 0;">
+      생성일시: <span id="genTime"></span> | 기준일: <span id="baseDate2"></span>
     </div>
   </div>
 
-  <!-- 포항 KPI 테이블 -->
-  <div class="factory-section section-block">
-    <div class="section-title">🏗 포항공장 설비 KPI <span class="badge">6 LINE</span></div>
-    <div class="card" style="overflow-x:auto;">
-      <table class="kpi-table" id="tablePohang"></table>
+  <!-- 월별 추세 차트 (항상 표시) -->
+  <div class="trend-section" id="trendSection">
+    <div class="section-title">📈 월별 평균 가동율 추세</div>
+    <div class="card chart-card" style="padding:16px;">
+      <canvas id="chartTrend" style="max-height:180px;"></canvas>
     </div>
   </div>
 
-  <!-- 군산 KPI 테이블 -->
-  <div class="factory-section section-block">
-    <div class="section-title">🏗 군산공장 설비 KPI <span class="badge green">4 LINE</span></div>
-    <div class="card" style="overflow-x:auto;">
-      <table class="kpi-table" id="tableGunsan"></table>
-    </div>
-  </div>
-
-  <!-- 순천 KPI 테이블 -->
-  <div class="factory-section section-block">
-    <div class="section-title">🏗 순천공장 설비 KPI <span class="badge orange">2 LINE</span></div>
-    <div class="card" style="overflow-x:auto;">
-      <table class="kpi-table" id="tableSuncheon"></table>
-    </div>
-  </div>
-
-  <!-- 오더 현황 -->
-  <div class="section-title">📋 공장별 오더 현황</div>
-  <div class="order-grid">
-    <div class="card order-card" id="orderPohang"></div>
-    <div class="card order-card" id="orderGunsan"></div>
-    <div class="card order-card" id="orderSuncheon"></div>
-  </div>
-
-  <div style="text-align:center;color:#aaa;font-size:11px;padding:12px 0;">
-    생성일시: <span id="genTime"></span> | 기준일: <span id="baseDate2"></span>
-  </div>
-</div>
+</div><!-- /container -->
 
 <script>
-// ── 유틸 함수 ──
-const fmtN = (v, d=1) => (typeof v === 'number') ? v.toFixed(d) : '—';
-const fmtI = v => (typeof v === 'number') ? v.toLocaleString() : '—';
-
-function utilClass(u) {
-  if (u >= 80) return 'good';
-  if (u >= 65) return 'warn';
-  return 'low';
-}
-
+// ── 유틸 ──
+const fmtN = (v, d=1) => typeof v === 'number' ? v.toFixed(d) : '—';
+const fmtI = v => typeof v === 'number' ? v.toLocaleString() : '—';
+function utilClass(u) { return u >= 80 ? 'good' : u >= 65 ? 'warn' : 'low'; }
 function utilBar(u) {
   const cls = utilClass(u);
-  return `<div class="util-bar">
-    <div class="util-bar-bg"><div class="util-bar-fill ${cls}" style="width:${Math.min(u,100)}%"></div></div>
-    <span style="min-width:38px">${u.toFixed(1)}%</span>
-  </div>`;
+  return `<div class="util-bar"><div class="util-bar-bg"><div class="util-bar-fill ${cls}" style="width:${Math.min(u,100)}%"></div></div><span style="min-width:38px">${u.toFixed(1)}%</span></div>`;
 }
 
-// ── 헤더 메타 ──
-document.getElementById('headerMeta').innerHTML =
-  `계획 기간: <strong>${DATA.period}</strong><br>기준일: ${DATA.baseDate}<br>갱신: ${new Date().toLocaleDateString('ko-KR')}`;
+// ── 탭 생성 ──
+function buildTabs() {
+  const container = document.getElementById('monthTabs');
+  container.innerHTML = '';
+  MONTHS.slice().reverse().forEach(m => {
+    const btn = document.createElement('button');
+    btn.className = 'month-tab' + (DATA_STORE[m] ? ' has-data' : '') + (m === activeMonth ? ' active' : '');
+    btn.textContent = m.replace('2026년 ', '');
+    btn.onclick = () => selectMonth(m);
+    container.appendChild(btn);
+  });
+  // 업로드 버튼
+  const uploadWrap = document.createElement('label');
+  uploadWrap.className = 'btn-upload upload-btn';
+  uploadWrap.innerHTML = `📂 Excel 업로드<input type="file" id="fileInputHeader" accept=".xlsx,.xls">`;
+  uploadWrap.querySelector('input').onchange = e => handleFile(e.target.files[0]);
+  container.appendChild(uploadWrap);
+}
 
-document.getElementById('genTime').textContent = new Date().toLocaleString('ko-KR');
-document.getElementById('baseDate2').textContent = DATA.baseDate;
+// ── 월 선택 ──
+function selectMonth(m) {
+  activeMonth = m;
+  buildTabs();
+  const data = DATA_STORE[m];
+  const dashContent = document.getElementById('dashContent');
+  const dropZone = document.getElementById('dropZone');
+  const dropZoneMonth = document.getElementById('dropZoneMonth');
+  if (data) {
+    dashContent.classList.remove('hidden');
+    dropZone.classList.add('hidden');
+    renderDashboard(data);
+  } else {
+    dashContent.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+    dropZoneMonth.textContent = m + ' 조관계획서 Excel 파일을 업로드하세요';
+  }
+  updateTrendChart();
+}
 
-// ── 요약 카드 ──
-function makeSummaryCard(id, label, equips, orders, colorClass) {
-  const totalMachH = equips.reduce((s,e)=>s+e.machineH, 0);
+// ── 대시보드 렌더 ──
+function renderDashboard(D) {
+  document.getElementById('headerMeta').innerHTML =
+    `계획 기간: <strong>${D.period}</strong><br>기준일: ${D.baseDate}<br>갱신: ${new Date().toLocaleDateString('ko-KR')}`;
+  document.getElementById('genTime').textContent = new Date().toLocaleString('ko-KR');
+  document.getElementById('baseDate2').textContent = D.baseDate;
+
+  makeSummaryCard('sumPohang', '포항공장 계획량', D.pohang, D.pohangOrders.total);
+  makeSummaryCard('sumGunsan', '군산공장 계획량', D.gunsan, D.gunsanOrders.total);
+  makeSummaryCard('sumSuncheon', '순천공장 계획량', D.suncheon, D.suncheonOrders.total);
+  const all = [...D.pohang, ...D.gunsan, ...D.suncheon];
+  const totalQty = all.reduce((s,e)=>s+e.planQty,0);
+  const totalMachH = all.reduce((s,e)=>s+e.machineH,0);
+  const totalOrders = D.pohangOrders.total + D.gunsanOrders.total + D.suncheonOrders.total;
+  const avgUtil = (all.reduce((s,e)=>s+e.utilRate,0)/all.length).toFixed(1);
+  document.getElementById('sumTotal').innerHTML = `
+    <div class="label">강관 전체 합계</div>
+    <div class="value">${fmtI(totalQty)}<span style="font-size:14px;font-weight:400"> t</span></div>
+    <div class="sub">${all.length}Line | 총 ${totalMachH.toFixed(0)}h | 평균가동율 ${avgUtil}% | 오더 ${totalOrders}건</div>`;
+
+  buildTable('tablePohang', D.pohang);
+  buildTable('tableGunsan', D.gunsan);
+  buildTable('tableSuncheon', D.suncheon);
+
+  buildOrderCard('orderPohang', '포항공장', D.pohangOrders, D.pohangUsage);
+  buildOrderCard('orderGunsan', '군산공장', D.gunsanOrders, D.gunsanUsage);
+  buildOrderCard('orderSuncheon', '순천공장', D.suncheonOrders, null);
+
+  renderUtilChart(D);
+  renderPohangJokwanChart(D);
+  renderPohangUsageChart(D);
+}
+
+function makeSummaryCard(id, label, equips, orders) {
+  const totalMachH = equips.reduce((s,e)=>s+e.machineH,0);
   const avgUtil = (equips.reduce((s,e)=>s+e.utilRate,0)/equips.length).toFixed(1);
   const totalQty = equips.reduce((s,e)=>s+e.planQty,0);
   document.getElementById(id).innerHTML = `
@@ -232,24 +348,10 @@ function makeSummaryCard(id, label, equips, orders, colorClass) {
     <div class="value">${fmtI(totalQty)}<span style="font-size:14px;font-weight:400"> t</span></div>
     <div class="sub">${equips.length}Line | 총 ${totalMachH.toFixed(0)}h | 평균가동율 ${avgUtil}% | 오더 ${orders}건</div>`;
 }
-makeSummaryCard('sumPohang','포항공장 계획량',DATA.pohang,DATA.pohangOrders.total,'pohang');
-makeSummaryCard('sumGunsan','군산공장 계획량',DATA.gunsan,DATA.gunsanOrders.total,'gunsan');
-makeSummaryCard('sumSuncheon','순천공장 계획량',DATA.suncheon,DATA.suncheonOrders.total,'suncheon');
 
-const allEquips = [...DATA.pohang,...DATA.gunsan,...DATA.suncheon];
-const totalQty = allEquips.reduce((s,e)=>s+e.planQty,0);
-const totalMachH = allEquips.reduce((s,e)=>s+e.machineH,0);
-const totalOrders = DATA.pohangOrders.total + DATA.gunsanOrders.total + DATA.suncheonOrders.total;
-const avgUtil = (allEquips.reduce((s,e)=>s+e.utilRate,0)/allEquips.length).toFixed(1);
-document.getElementById('sumTotal').innerHTML = `
-  <div class="label">강관 전체 합계</div>
-  <div class="value">${fmtI(totalQty)}<span style="font-size:14px;font-weight:400"> t</span></div>
-  <div class="sub">12Line | 총 ${totalMachH.toFixed(0)}h | 평균가동율 ${avgUtil}% | 오더 ${totalOrders}건</div>`;
-
-// ── KPI 테이블 빌더 ──
 const TABLE_HEADER = `<thead><tr>
   <th>설비</th><th>가동가능(h)</th><th>일평균(h)</th><th>가동일수</th>
-  <th>목표생산<br>(t/h)</th><th>계획생산<br>(t/h)</th><th>기계시간(h)</th>
+  <th>목표생산(t/h)</th><th>계획생산(t/h)</th><th>기계시간(h)</th>
   <th>비가동(h)</th><th>가동율</th><th>RC FULL</th><th>RC SIZE</th><th>계획량(t)</th>
 </tr></thead>`;
 
@@ -258,23 +360,14 @@ function buildTable(tableId, equips) {
   let html = TABLE_HEADER + '<tbody>';
   equips.forEach(e => {
     const diff = e.planProd - e.targetProd;
-    const diffColor = diff >= 0 ? '#27ae60' : '#e74c3c';
+    const dc = diff >= 0 ? '#27ae60' : '#e74c3c';
     html += `<tr>
-      <td class="name">${e.name}</td>
-      <td>${fmtN(e.availH)}</td>
-      <td>${fmtN(e.avgH)}</td>
-      <td>${e.days}</td>
-      <td>${fmtN(e.targetProd)}</td>
-      <td style="color:${diffColor};font-weight:700">${fmtN(e.planProd)}</td>
-      <td>${fmtN(e.machineH)}</td>
-      <td>${fmtN(e.idleH)}</td>
-      <td>${utilBar(e.utilRate)}</td>
-      <td>${e.rcFull}</td>
-      <td>${e.rcSize}</td>
-      <td style="font-weight:700">${fmtI(e.planQty)}</td>
+      <td class="name">${e.name}</td><td>${fmtN(e.availH)}</td><td>${fmtN(e.avgH)}</td><td>${e.days}</td>
+      <td>${fmtN(e.targetProd)}</td><td style="color:${dc};font-weight:700">${fmtN(e.planProd)}</td>
+      <td>${fmtN(e.machineH)}</td><td>${fmtN(e.idleH)}</td><td>${utilBar(e.utilRate)}</td>
+      <td>${e.rcFull}</td><td>${e.rcSize}</td><td style="font-weight:700">${fmtI(e.planQty)}</td>
     </tr>`;
   });
-  // 소계 행
   const tot = {
     availH: equips.reduce((s,e)=>s+e.availH,0),
     machineH: equips.reduce((s,e)=>s+e.machineH,0),
@@ -286,104 +379,284 @@ function buildTable(tableId, equips) {
   };
   html += `<tr style="background:#f0f4ff;font-weight:700">
     <td>소계</td><td>${fmtN(tot.availH)}</td><td>—</td><td>—</td><td>—</td><td>—</td>
-    <td>${fmtN(tot.machineH)}</td><td>${fmtN(tot.idleH)}</td>
-    <td>${utilBar(tot.avgUtil)}</td>
+    <td>${fmtN(tot.machineH)}</td><td>${fmtN(tot.idleH)}</td><td>${utilBar(tot.avgUtil)}</td>
     <td>${tot.rcFull}</td><td>${tot.rcSize}</td><td>${fmtI(tot.planQty)}</td>
-  </tr>`;
-  html += '</tbody>';
+  </tr></tbody>`;
   tbl.innerHTML = html;
 }
-buildTable('tablePohang', DATA.pohang);
-buildTable('tableGunsan', DATA.gunsan);
-buildTable('tableSuncheon', DATA.suncheon);
 
-// ── 오더 카드 ──
-function buildOrderCard(id, title, orders, usageObj, jokwanObj, colorHex) {
-  const usageHtml = Object.entries(usageObj)
-    .sort((a,b)=>b[1]-a[1]).slice(0,6)
-    .map(([k,v]) => `<div class="order-row"><span class="order-label">${k}</span><span class="order-val">${v}건</span></div>`).join('');
-  const jokwanHtml = jokwanObj ? Object.entries(jokwanObj)
-    .map(([k,v])=>`<span style="background:#e8f0fe;color:#1a3c5e;padding:2px 6px;border-radius:4px;margin:2px;display:inline-block;font-size:11px;">${k} ${v}</span>`).join('') : '';
-  document.getElementById(id).innerHTML = `
-    <div style="color:${colorHex};font-weight:700;font-size:13px;">${title}</div>
-    <div class="order-count">${orders}</div>
-    <div style="font-size:11px;color:#888;margin-bottom:8px;">총 오더 건수</div>
-    ${jokwanHtml ? `<div style="margin-bottom:8px;">${jokwanHtml}</div>` : ''}
-    <div style="font-size:12px;font-weight:700;color:#555;margin:6px 0 4px;">용도별</div>
-    ${usageHtml}`;
+function buildOrderCard(id, label, orders, usage) {
+  let html = `<div style="font-weight:700;font-size:13px;color:#555;margin-bottom:6px;">${label} 오더 현황</div>
+    <div class="order-count">${orders.total}<span style="font-size:14px;font-weight:400"> 건</span></div>`;
+  if (orders.jokwan) {
+    html += Object.entries(orders.jokwan).map(([k,v])=>
+      `<div class="order-row"><span class="order-label">${k}</span><span class="order-val">${v}건</span></div>`).join('');
+  }
+  if (usage) {
+    const topUsage = Object.entries(usage).slice(0,5);
+    html += `<div style="margin-top:8px;font-size:11px;font-weight:700;color:#888;margin-bottom:4px;">용도별 상위</div>`;
+    html += topUsage.map(([k,v])=>
+      `<div class="order-row"><span class="order-label">${k}</span><span class="order-val">${v}건</span></div>`).join('');
+  }
+  document.getElementById(id).innerHTML = html;
 }
-buildOrderCard('orderPohang','포항공장', DATA.pohangOrders.total, DATA.pohangUsage, DATA.pohangOrders.jokwan, '#2d6a9f');
-buildOrderCard('orderGunsan','군산공장', DATA.gunsanOrders.total, DATA.gunsanUsage, null, '#27ae60');
-buildOrderCard('orderSuncheon','순천공장', DATA.suncheonOrders.total, {PILE:16}, null, '#e67e22');
 
-// ── 차트 1: 전 공장 설비 가동율 ──
-new Chart(document.getElementById('chartUtil'), {
-  type: 'bar',
-  data: {
-    labels: allEquips.map(e=>e.name),
-    datasets: [{
-      label: '가동율(%)',
-      data: allEquips.map(e=>e.utilRate),
-      backgroundColor: allEquips.map(e => e.utilRate>=80?'rgba(39,174,96,.8)': e.utilRate>=65?'rgba(243,156,18,.8)':'rgba(231,76,60,.8)'),
-      borderRadius: 4
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      y: { min:0, max:100, ticks:{callback:v=>v+'%'} },
-      x: { ticks:{font:{size:10}} }
+// ── 차트 ──
+function renderUtilChart(D) {
+  const ctx = document.getElementById('chartUtil').getContext('2d');
+  if (chartUtil) chartUtil.destroy();
+  const all = [...D.pohang, ...D.gunsan, ...D.suncheon];
+  chartUtil = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: all.map(e=>e.name),
+      datasets: [{
+        label: '가동율(%)',
+        data: all.map(e=>e.utilRate),
+        backgroundColor: all.map(e=>e.utilRate>=80?'#27ae60':e.utilRate>=65?'#f39c12':'#e74c3c'),
+        borderRadius: 4
+      }]
     },
-    plugins: {
-      legend:{display:false},
-      annotation: {},
-      tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y.toFixed(1)}%`}}
-    }
-  }
-});
-
-// ── 차트 2: 포항 물종 파이 ──
-const jk = DATA.pohangOrders.jokwan;
-new Chart(document.getElementById('chartPohangJokwan'), {
-  type: 'doughnut',
-  data: {
-    labels: Object.keys(jk),
-    datasets: [{ data: Object.values(jk), backgroundColor:['#2d6a9f','#e67e22','#27ae60'], borderWidth:2 }]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{position:'bottom',labels:{font:{size:11}}},
-      tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.parsed}건 (${(ctx.parsed/DATA.pohangOrders.total*100).toFixed(1)}%)`}}
-    }
-  }
-});
-
-// ── 차트 3: 포항 용도 수평 바 ──
-const usageTop6 = Object.entries(DATA.pohangUsage).sort((a,b)=>b[1]-a[1]).slice(0,6);
-new Chart(document.getElementById('chartPohangUsage'), {
-  type: 'bar',
-  data: {
-    labels: usageTop6.map(x=>x[0]),
-    datasets: [{ label:'오더수', data:usageTop6.map(x=>x[1]), backgroundColor:'rgba(45,106,159,.75)', borderRadius:4 }]
-  },
-  options: {
-    indexAxis:'y', responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{ x:{ticks:{stepSize:20}}, y:{ticks:{font:{size:10}}} }
-  }
-});
-</script>
-
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/pipe-plan-dashboard/sw.js')
-      .then(r => console.log('SW registered:', r.scope))
-      .catch(e => console.log('SW error:', e));
+    options: { plugins:{legend:{display:false}}, scales:{y:{min:0,max:100,grid:{color:'#eee'}},x:{grid:{display:false}}}, responsive:true, maintainAspectRatio:true }
   });
 }
-</script>
 
+function renderPohangJokwanChart(D) {
+  const ctx = document.getElementById('chartPohangJokwan').getContext('2d');
+  if (chartPohangJokwan) chartPohangJokwan.destroy();
+  const jk = D.pohangOrders.jokwan || {};
+  chartPohangJokwan = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(jk),
+      datasets: [{ data: Object.values(jk), backgroundColor: ['#2d6a9f','#27ae60','#e67e22','#8e44ad'], borderWidth: 2 }]
+    },
+    options: { plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}, responsive:true, maintainAspectRatio:true }
+  });
+}
+
+function renderPohangUsageChart(D) {
+  const ctx = document.getElementById('chartPohangUsage').getContext('2d');
+  if (chartPohangUsage) chartPohangUsage.destroy();
+  const top6 = Object.entries(D.pohangUsage).slice(0,6);
+  chartPohangUsage = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: top6.map(([k])=>k),
+      datasets: [{ label: '건', data: top6.map(([,v])=>v), backgroundColor: '#2d6a9f', borderRadius: 4 }]
+    },
+    options: { indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#eee'}},y:{grid:{display:false}}}, responsive:true, maintainAspectRatio:true }
+  });
+}
+
+// ── 추세 차트 ──
+function updateTrendChart() {
+  const ctx = document.getElementById('chartTrend').getContext('2d');
+  if (chartTrend) chartTrend.destroy();
+  const labels = MONTHS.filter(m => DATA_STORE[m]);
+  if (labels.length === 0) { document.getElementById('trendSection').style.display='none'; return; }
+  document.getElementById('trendSection').style.display='';
+
+  const pohangAvg = labels.map(m => {
+    const D = DATA_STORE[m];
+    return +(D.pohang.reduce((s,e)=>s+e.utilRate,0)/D.pohang.length).toFixed(1);
+  });
+  const gunsanAvg = labels.map(m => {
+    const D = DATA_STORE[m];
+    return +(D.gunsan.reduce((s,e)=>s+e.utilRate,0)/D.gunsan.length).toFixed(1);
+  });
+  const suncheonAvg = labels.map(m => {
+    const D = DATA_STORE[m];
+    return +(D.suncheon.reduce((s,e)=>s+e.utilRate,0)/D.suncheon.length).toFixed(1);
+  });
+
+  chartTrend = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels.map(m=>m.replace('2026년 ','')),
+      datasets: [
+        { label: '포항', data: pohangAvg, borderColor: '#2d6a9f', backgroundColor: 'rgba(45,106,159,.1)', tension: 0.3, pointRadius: 5 },
+        { label: '군산', data: gunsanAvg, borderColor: '#27ae60', backgroundColor: 'rgba(39,174,96,.1)', tension: 0.3, pointRadius: 5 },
+        { label: '순천', data: suncheonAvg, borderColor: '#e67e22', backgroundColor: 'rgba(230,126,34,.1)', tension: 0.3, pointRadius: 5 }
+      ]
+    },
+    options: {
+      plugins: { legend: { position:'top' } },
+      scales: { y: { min:50, max:100, grid:{color:'#eee'} }, x: { grid:{display:false} } },
+      responsive: true, maintainAspectRatio: true
+    }
+  });
+}
+
+// ── Excel 업로드 & 파싱 ──
+function handleFile(file) {
+  if (!file) return;
+  const status = document.getElementById('parseStatus');
+  status.className = 'parse-status show';
+  status.textContent = `📂 ${file.name} 파싱 중...`;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const wb = XLSX.read(e.target.result, { type: 'array' });
+      const parsed = parseXlsx(wb, file.name);
+      if (parsed.error) {
+        status.className = 'parse-status show err';
+        status.textContent = '❌ ' + parsed.error;
+        return;
+      }
+      // 월 추정: 파일명에서 또는 파싱된 period 사용
+      const monthKey = parsed.period || guessMonth(file.name);
+      if (!monthKey) {
+        status.className = 'parse-status show err';
+        status.textContent = '❌ 월을 특정할 수 없습니다. 파일명에 월 정보를 포함해주세요.';
+        return;
+      }
+      DATA_STORE[monthKey] = parsed;
+      status.className = 'parse-status show ok';
+      status.textContent = `✅ ${monthKey} 데이터 업로드 완료 — 포항 ${parsed.pohang.length}Line, 군산 ${parsed.gunsan.length}Line, 순천 ${parsed.suncheon.length}Line`;
+      activeMonth = monthKey;
+      buildTabs();
+      selectMonth(monthKey);
+      setTimeout(() => { status.className = 'parse-status'; }, 5000);
+    } catch(err) {
+      status.className = 'parse-status show err';
+      status.textContent = '❌ 파싱 오류: ' + err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function guessMonth(filename) {
+  const m = filename.match(/(\d+)월/);
+  if (!m) return null;
+  const mo = parseInt(m[1]);
+  return `2026년 ${mo}월`;
+}
+
+// ── 설비가동계획 시트 파싱 ──
+// 시트 구조: 행 6~11 = 포항(PM22,SM11,PM38,PM51,PM53,PM116)
+//            행 13~16 = 군산(PM202,PM201,PM204,PM203)
+//            행 18~19 = 순천(PM461,PM462)
+// 컬럼: A=설비명, B=가동가능h, C=일평균h, D=가동일수, E=목표생산, F=계획생산,
+//        G=기계시간, H=비가동, I=가동율, J=RC FULL, K=RC SIZE, L=계획량
+function parseXlsx(wb, filename) {
+  // 설비가동계획 시트 탐색
+  const planSheetName = wb.SheetNames.find(n => n.includes('설비가동계획') || n.includes('가동계획'));
+  if (!planSheetName) return { error: '설비가동계획 시트를 찾을 수 없습니다. 시트명: ' + wb.SheetNames.join(', ') };
+  const planSheet = wb.Sheets[planSheetName];
+
+  function cell(sheet, row, col) {
+    const addr = XLSX.utils.encode_cell({ r: row-1, c: col-1 }); // 1-based to 0-based
+    const c = sheet[addr];
+    return c ? (typeof c.v === 'number' ? c.v : parseFloat(c.v) || 0) : 0;
+  }
+  function parseEquipRows(sheet, rows, names) {
+    return rows.map((r, i) => ({
+      name:      names[i],
+      availH:    cell(sheet, r, 2),
+      avgH:      cell(sheet, r, 3),
+      days:      Math.round(cell(sheet, r, 4)),
+      targetProd:cell(sheet, r, 5),
+      planProd:  cell(sheet, r, 6),
+      machineH:  cell(sheet, r, 7),
+      idleH:     cell(sheet, r, 8),
+      utilRate:  +(cell(sheet, r, 9) * (cell(sheet, r, 9) <= 1 ? 100 : 1)).toFixed(1),
+      rcFull:    Math.round(cell(sheet, r, 10)),
+      rcSize:    Math.round(cell(sheet, r, 11)),
+      planQty:   Math.round(cell(sheet, r, 12))
+    }));
+  }
+
+  const pohang   = parseEquipRows(planSheet, [6,7,8,9,10,11], ['PM22','SM11','PM38','PM51','PM53','PM116']);
+  const gunsan   = parseEquipRows(planSheet, [13,14,15,16],    ['PM202','PM201','PM204','PM203']);
+  const suncheon = parseEquipRows(planSheet, [18,19],          ['PM461','PM462']);
+
+  // 포항 시트
+  let pohangOrders = { total: 0, jokwan: { ERW: 0, JCOE: 0, SRM: 0 } };
+  let pohangUsage = {};
+  const pohSheet = wb.Sheets[wb.SheetNames.find(n => n.includes('포항'))];
+  if (pohSheet) {
+    const rows = XLSX.utils.sheet_to_json(pohSheet, { header: 1, defval: '' });
+    rows.forEach(row => {
+      const col6 = String(row[5] || '').trim();
+      const col7 = String(row[6] || '').trim();
+      if (col6) {
+        if (!pohangUsage[col6]) pohangUsage[col6] = 0;
+        pohangUsage[col6]++;
+        pohangOrders.total++;
+      }
+      if (col7 && ['ERW','JCOE','SRM'].includes(col7)) {
+        pohangOrders.jokwan[col7] = (pohangOrders.jokwan[col7] || 0) + 1;
+      }
+    });
+  }
+
+  // 군산 시트
+  let gunsanOrders = { total: 0 };
+  let gunsanUsage = {};
+  const gsSheet = wb.Sheets[wb.SheetNames.find(n => n.includes('군산'))];
+  if (gsSheet) {
+    const rows = XLSX.utils.sheet_to_json(gsSheet, { header: 1, defval: '' });
+    rows.forEach(row => {
+      const col8 = String(row[7] || '').trim();
+      if (col8) {
+        if (!gunsanUsage[col8]) gunsanUsage[col8] = 0;
+        gunsanUsage[col8]++;
+        gunsanOrders.total++;
+      }
+    });
+  }
+
+  // 순천 시트
+  let suncheonOrders = { total: 0 };
+  const scSheet = wb.Sheets[wb.SheetNames.find(n => n.includes('순천'))];
+  if (scSheet) {
+    const rows = XLSX.utils.sheet_to_json(scSheet, { header: 1, defval: '' });
+    rows.forEach(row => {
+      const col6 = String(row[5] || '').trim();
+      if (col6) suncheonOrders.total++;
+    });
+  }
+
+  // 월/기준일 추정
+  const monthMatch = filename.match(/(\d+)월/);
+  const mo = monthMatch ? parseInt(monthMatch[1]) : new Date().getMonth() + 1;
+  const period = `2026년 ${mo}월`;
+  const baseDate = `2026-${String(mo-1||12).padStart(2,'0')}-28`;
+
+  return { period, baseDate, pohang, gunsan, suncheon, pohangOrders, pohangUsage, gunsanOrders, gunsanUsage, suncheonOrders };
+}
+
+// ── 드롭존 이벤트 ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildTabs();
+  selectMonth(activeMonth);
+
+  const dz = document.getElementById('dropZone');
+  const fi = document.getElementById('fileInputDrop');
+
+  dz.addEventListener('click', () => fi.click());
+  fi.addEventListener('change', e => handleFile(e.target.files[0]));
+
+  dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+  dz.addEventListener('drop', e => {
+    e.preventDefault();
+    dz.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
+  });
+
+  // 전역 드래그 앤 드롭
+  document.body.addEventListener('dragover', e => e.preventDefault());
+  document.body.addEventListener('drop', e => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && (file.name.endsWith('.xlsx') || file.name.endsWith('.xls'))) {
+      handleFile(file);
+    }
+  });
+});
+</script>
 </body>
 </html>
