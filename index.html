@@ -153,9 +153,84 @@ const DATA_STORE = {
     gunsanUsage:  { '압력배관용':44, '일반배관용':33, '구조용원형관':7, '재료관':7, '전선관':6, '연료가스배관용':5, '구조용':2 },
     suncheonOrders: { total:18 }
   },
-  '2026년 3월': null,
-  '2026년 2월': null,
-  '2026년 1월': null
+  '2026년 3월': {
+        period: '2026년 3월', baseDate: '2026-02-26',
+        pohang: [
+          { name:'PM22', availH:390, avgH:15, days:26, targetProd:45.7, planProd:31.96, machineH:275.34, idleH:114.66, utilRate:70.6, rcFull:5, rcSize:5, planQty:8800 },
+          { name:'SM11', availH:52.5, avgH:10.5, days:5, targetProd:12.2, planProd:0, machineH:37.07, idleH:15.44, utilRate:70.6, rcFull:1, rcSize:0, planQty:0 },
+          { name:'PM38', availH:375, avgH:15, days:25, targetProd:17.5, planProd:9.58, machineH:292.13, idleH:82.88, utilRate:77.9, rcFull:4, rcSize:0, planQty:2800 },
+          { name:'PM51', availH:360, avgH:15, days:24, targetProd:51.2, planProd:29.71, machineH:259.2, idleH:100.8, utilRate:72.0, rcFull:5, rcSize:2, planQty:7700 },
+          { name:'PM53', availH:360, avgH:15, days:24, targetProd:73.8, planProd:58.33, machineH:252.0, idleH:108.0, utilRate:70.0, rcFull:9, rcSize:0, planQty:14700 },
+          { name:'PM116', availH:406.5, avgH:16.26, days:25, targetProd:24.0, planProd:18.17, machineH:357.72, idleH:48.78, utilRate:88.0, rcFull:0, rcSize:0, planQty:6500 }
+        ],
+        gunsan: [
+          { name:'PM202', availH:127.5, avgH:7.5, days:17, targetProd:6.73, planProd:6.35, machineH:110.16, idleH:17.34, utilRate:86.4, rcFull:3, rcSize:0, planQty:700 },
+          { name:'PM201', availH:255, avgH:15, days:17, targetProd:12.3, planProd:9.79, machineH:214.46, idleH:40.55, utilRate:84.1, rcFull:4, rcSize:0, planQty:2100 },
+          { name:'PM204', availH:150, avgH:7.5, days:20, targetProd:30.78, planProd:42.83, machineH:123.75, idleH:26.25, utilRate:82.5, rcFull:5, rcSize:0, planQty:5300 },
+          { name:'PM203', availH:255, avgH:15, days:17, targetProd:15.14, planProd:7.48, machineH:200.43, idleH:54.57, utilRate:78.6, rcFull:5, rcSize:0, planQty:1500 }
+        ],
+        suncheon: [
+          { name:'PM261', availH:354, avgH:14.75, days:24, targetProd:13.5, planProd:6.52, machineH:230.1, idleH:123.9, utilRate:65.0, rcFull:9, rcSize:0, planQty:1500 },
+          { name:'PM262', availH:374, avgH:14.96, days:25, targetProd:15.5, planProd:22.92, machineH:261.8, idleH:112.2, utilRate:70.0, rcFull:5, rcSize:0, planQty:6000 }
+        ],
+        pohangOrders: { total:262, jokwan:{ ERW:193, JCOE:56, SRM:13 } },
+        pohangUsage:  { '송유관':73, '압력배관용':59, '재료관':52, '일반배관용':25, '구조용':18, '기타구조용':11, 'PILE':6, '유정용(케이싱)':6, '유정용(튜빙)':3, '열교환기용':2 },
+        gunsanOrders: { total:144 },
+        gunsanUsage:  { '건축구조용원형관':30, '압력배관용':52, '일반배관용':30, '구조용원형관':11, '전선관':6, '연료가스배관용':5, '구조용':4, '재료관':3, '건축구조용':3 },
+        suncheonOrders: { total:19 }
+      },
+  '2026년 2월': {
+        period: '2026년 2월', baseDate: '2026-01-29',
+        pohang: [
+          { name:'PM22', availH:330, avgH:15, days:22, targetProd:45.7, planProd:37.42, machineH:235.14, idleH:94.86, utilRate:71.3, rcFull:5, rcSize:3, planQty:8800 },
+          { name:'SM11', availH:0, avgH:0, days:0, targetProd:12.2, planProd:0, machineH:0, idleH:0, utilRate:0, rcFull:0, rcSize:0, planQty:0 },
+          { name:'PM38', availH:330, avgH:15, days:22, targetProd:17.5, planProd:10.53, machineH:265.9, idleH:64.1, utilRate:80.6, rcFull:3, rcSize:0, planQty:2800 },
+          { name:'PM51', availH:315, avgH:15, days:21, targetProd:51.2, planProd:32.16, machineH:239.4, idleH:75.6, utilRate:76.0, rcFull:8, rcSize:2, planQty:7700 },
+          { name:'PM53', availH:300, avgH:15, days:20, targetProd:73.8, planProd:69.01, machineH:213.0, idleH:87.0, utilRate:71.0, rcFull:6, rcSize:0, planQty:14700 },
+          { name:'PM116', availH:351, avgH:15.95, days:22, targetProd:24.0, planProd:20.58, machineH:315.9, idleH:35.1, utilRate:90.0, rcFull:0, rcSize:0, planQty:6500 }
+        ],
+        gunsan: [
+          { name:'PM202', availH:120, avgH:7.5, days:16, targetProd:6.73, planProd:6.61, machineH:105.84, idleH:14.16, utilRate:88.2, rcFull:4, rcSize:0, planQty:700 },
+          { name:'PM201', availH:240, avgH:15, days:16, targetProd:12.3, planProd:10.5, machineH:199.92, idleH:40.08, utilRate:83.3, rcFull:4, rcSize:0, planQty:2100 },
+          { name:'PM204', availH:240, avgH:15, days:16, targetProd:30.78, planProd:26.13, machineH:202.8, idleH:37.2, utilRate:84.5, rcFull:5, rcSize:0, planQty:5300 },
+          { name:'PM203', availH:120, avgH:7.5, days:16, targetProd:15.14, planProd:15.04, machineH:99.72, idleH:20.28, utilRate:83.1, rcFull:4, rcSize:0, planQty:1500 }
+        ],
+        suncheon: [
+          { name:'PM261', availH:202, avgH:9.62, days:21, targetProd:13.5, planProd:11.42, machineH:131.3, idleH:70.7, utilRate:65.0, rcFull:6, rcSize:0, planQty:1500 },
+          { name:'PM262', availH:422, avgH:20.1, days:21, targetProd:15.5, planProd:17.77, machineH:337.6, idleH:84.4, utilRate:80.0, rcFull:0, rcSize:0, planQty:6000 }
+        ],
+        pohangOrders: { total:328, jokwan:{ ERW:272, JCOE:56, SRM:0 } },
+        pohangUsage:  { '송유관':105, '구조용':68, '재료관':61, '압력배관용':39, '일반배관용':20, '열교환기용':10, 'PILE':9, '기타배관용':3, '연료가스배관용':2, '유정용(튜빙)':2 },
+        gunsanOrders: { total:107 },
+        gunsanUsage:  { '일반배관용':32, '압력배관용':30, '구조용원형관':23, '재료관':8, '연료가스배관용':6, '전선관':4, '구조용':4 },
+        suncheonOrders: { total:10 }
+      },
+  '2026년 1월': {
+        period: '2026년 1월', baseDate: '2025-12-29',
+        pohang: [
+          { name:'PM22', availH:345, avgH:15, days:23, targetProd:45.7, planProd:33.44, machineH:251.16, idleH:93.84, utilRate:72.8, rcFull:5, rcSize:2, planQty:8400 },
+          { name:'SM11', availH:0, avgH:0, days:0, targetProd:12.2, planProd:0, machineH:0, idleH:0, utilRate:0, rcFull:0, rcSize:0, planQty:600 },
+          { name:'PM38', availH:375, avgH:15, days:25, targetProd:17.5, planProd:11.41, machineH:306.75, idleH:68.25, utilRate:81.8, rcFull:5, rcSize:0, planQty:3500 },
+          { name:'PM51', availH:345, avgH:15, days:23, targetProd:51.2, planProd:50.24, machineH:258.75, idleH:86.25, utilRate:75.0, rcFull:7, rcSize:1, planQty:13000 },
+          { name:'PM53', availH:360, avgH:15, days:24, targetProd:73.8, planProd:73.3, machineH:259.2, idleH:100.8, utilRate:72.0, rcFull:6, rcSize:1, planQty:19000 },
+          { name:'PM116', availH:418, avgH:16.08, days:26, targetProd:24.0, planProd:11.54, machineH:355.3, idleH:62.7, utilRate:85.0, rcFull:0, rcSize:0, planQty:4100 }
+        ],
+        gunsan: [
+          { name:'PM202', availH:300, avgH:15, days:20, targetProd:6.73, planProd:3.81, machineH:262.8, idleH:37.2, utilRate:87.6, rcFull:5, rcSize:0, planQty:1000 },
+          { name:'PM201', availH:135, avgH:7.5, days:18, targetProd:12.3, planProd:13.32, machineH:112.59, idleH:22.41, utilRate:83.4, rcFull:4, rcSize:0, planQty:1500 },
+          { name:'PM204', availH:225, avgH:15, days:15, targetProd:30.78, planProd:12.53, machineH:183.6, idleH:41.4, utilRate:81.6, rcFull:6, rcSize:0, planQty:2300 },
+          { name:'PM203', availH:150, avgH:7.5, days:20, targetProd:15.14, planProd:18.23, machineH:126.15, idleH:23.85, utilRate:84.1, rcFull:5, rcSize:0, planQty:2300 }
+        ],
+        suncheon: [
+          { name:'PM261', availH:250, avgH:9.62, days:26, targetProd:13.5, planProd:11.08, machineH:162.5, idleH:87.5, utilRate:65.0, rcFull:10, rcSize:0, planQty:1800 },
+          { name:'PM262', availH:502, avgH:19.31, days:26, targetProd:15.5, planProd:17.68, machineH:401.6, idleH:100.4, utilRate:80.0, rcFull:0, rcSize:0, planQty:7100 }
+        ],
+        pohangOrders: { total:426, jokwan:{ ERW:284, JCOE:142, SRM:0 } },
+        pohangUsage:  { '압력배관용':153, '송유관':122, '일반배관용':55, '열교환기용':28, '재료관':22, '구조용':21, 'PILE':6, '가스공사':4, '연료가스배관용':2, '유정용(케이싱)':2 },
+        gunsanOrders: { total:143 },
+        gunsanUsage:  { '일반배관용':66, '압력배관용':42, '연료가스배관용':9, '전선관':8, '구조용':7, '구조용원형관':6, '재료관':5 },
+        suncheonOrders: { total:12 }
+      }
 };
 
 let activeMonth = '2026년 4월';
