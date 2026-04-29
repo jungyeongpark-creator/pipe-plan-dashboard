@@ -138,7 +138,7 @@ const DATA_STORE = {
       { name:'PM116', availH:418.00, avgH:16.08, days:26, targetProd:24.00, planProd:28.00, machineH:367.84, idleH:50.16,  utilRate:88.0, rcFull:0,  rcSize:0, planQty:10300 }
     ],
     gunsan: [
-      { name:'PM202', availH:157.50, avgH:7.50,  days:21, targetProd:6.73,  planProd:5.28,  machineH:132.46, idleH:25.04, utilRate:84.1, rcFull:2, rcSize:1, planQty:700  },
+      { name:'PM202', availH:157.50, avgH:7.50,  days:21, targetProd:6.73,  planProd:5.28,  machineH:132.46, idleH:25.04, utilRate:84.1, rcFull:2, rcSize:, planQty:700  },
       { name:'PM201', availH:255.00, avgH:15.00, days:17, targetProd:12.30, planProd:11.14, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:4, rcSize:1, planQty:2400 },
       { name:'PM204', availH:157.50, avgH:7.50,  days:21, targetProd:30.78, planProd:31.09, machineH:128.68, idleH:28.82, utilRate:81.7, rcFull:4, rcSize:0, planQty:4000 },
       { name:'PM203', availH:255.00, avgH:15.00, days:17, targetProd:15.14, planProd:13.92, machineH:215.47, idleH:39.53, utilRate:84.5, rcFull:5, rcSize:0, planQty:3000 }
@@ -208,12 +208,12 @@ const DATA_STORE = {
   '2026년 1월': {
         period: '2026년 1월', baseDate: '2025-12-29',
         pohang: [
-          { name:'PM22', availH:345, avgH:15, days:23, targetProd:45.7, planProd:33.44, machineH:251.16, idleH:93.84, utilRate:72.8, rcFull:5, rcSize:2, planQty:8400 },
-          { name:'SM11', availH:0, avgH:0, days:0, targetProd:12.2, planProd:0, machineH:0, idleH:0, utilRate:0, rcFull:0, rcSize:0, planQty:600 },
+          { name:'PM22', availH:345, avgH:15, days:23, targetProd:45.7, planProd:33.44, machineH:251.16, idleH:93.84, utilRate:72.8, rcFull:5, rcSize:2, planQty:9500 },
+          { name:'SM11', availH:0, avgH:0, days:0, targetProd:12.2, planProd:0, machineH:0, idleH:0, utilRate:0, rcFull:0, rcSize:0, planQty:0 },
           { name:'PM38', availH:375, avgH:15, days:25, targetProd:17.5, planProd:11.41, machineH:306.75, idleH:68.25, utilRate:81.8, rcFull:5, rcSize:0, planQty:3500 },
           { name:'PM51', availH:345, avgH:15, days:23, targetProd:51.2, planProd:50.24, machineH:258.75, idleH:86.25, utilRate:75.0, rcFull:7, rcSize:1, planQty:13000 },
-          { name:'PM53', availH:360, avgH:15, days:24, targetProd:73.8, planProd:73.3, machineH:259.2, idleH:100.8, utilRate:72.0, rcFull:6, rcSize:1, planQty:19000 },
-          { name:'PM116', availH:418, avgH:16.08, days:26, targetProd:24.0, planProd:11.54, machineH:355.3, idleH:62.7, utilRate:85.0, rcFull:0, rcSize:0, planQty:4100 }
+          { name:'PM53', availH:360, avgH:15, days:24, targetProd:73.8, planProd:73.3, machineH:259.2, idleH:100.8, utilRate:72.0, rcFull:6, rcSize:1, planQty:17000 },
+          { name:'PM116', availH:418, avgH:16.08, days:26, targetProd:24.0, planProd:11.54, machineH:355.3, idleH:62.7, utilRate:85.0, rcFull:0, rcSize:0, planQty:9400 }
         ],
         gunsan: [
           { name:'PM202', availH:300, avgH:15, days:20, targetProd:6.73, planProd:3.81, machineH:262.8, idleH:37.2, utilRate:87.6, rcFull:5, rcSize:0, planQty:1000 },
@@ -427,7 +427,7 @@ function makeSummaryCard(id, label, equips, orders) {
 const TABLE_HEADER = `<thead><tr>
   <th>설비</th><th>가동가능(h)</th><th>일평균(h)</th><th>가동일수</th>
   <th>목표생산(t/h)</th><th>계획생산(t/h)</th><th>기계시간(h)</th>
-  <th>비가동(h)</th><th>가동율</th><th>RC FULL</th><th>RC SIZE</th><th>계획량(t)</th>
+  <th>비가동(h)</th><th>목표 가동율</th><th>RC FULL</th><th>RC SIZE</th><th>계획량(t)</th>
 </tr></thead>`;
 
 function buildTable(tableId, equips) {
@@ -734,4 +734,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body>
-</html>
+</
