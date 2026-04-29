@@ -159,9 +159,16 @@ const DATA_STORE = {
       { name:'PM461', availH:220.00, avgH:10.00, days:22, targetProd:13.50, planProd:10.49, machineH:143.00, idleH:77.00, utilRate:65.0, rcFull:7, rcSize:0, planQty:1500 },
       { name:'PM462', availH:252.00, avgH:9.69,  days:26, targetProd:15.50, planProd:12.21, machineH:163.80, idleH:88.20, utilRate:65.0, rcFull:8, rcSize:0, planQty:2000 }
     ],
-    pohangMainOrders: [],
-    pohangMarket: null,
-    pohangOrders: { total:414, jokwan:{ ERW:363, JCOE:43, SRM:8 } },
+    pohangMainOrders: [
+          { code:'SEAH80CH',   od:'273',   dept:'수출1팀', customer:'SSA',             qty:0,    weight:2600, remark:'PM51' },
+          { code:'NX52L2',     od:'610',   dept:'수출1팀', customer:'CORPAC',          qty:0,    weight:2900, remark:'PM53' },
+          { code:'Z483C2X70M', od:'1,219', dept:'수출1팀', customer:'COMCO',           qty:130,  weight:880,  remark:'JCOE' },
+          { code:'Z483C2ATYH', od:'914외', dept:'수출1팀', customer:'VAN LEEUWEN',     qty:1250, weight:7790, remark:'JCOE' },
+          { code:'NX65L2 외',  od:'660외', dept:'수출1팀', customer:'MAMMOTH',         qty:350,  weight:1150, remark:'JCOE' },
+          { code:'2C60C22',    od:'660외', dept:'영업2팀', customer:'삼성이앤에이㈜',   qty:30,   weight:60,   remark:'JCOE' }
+        ],
+        pohangMarket: { sijangpum:1200, erwPile:2500 },
+        pohangOrders: { total:414, jokwan:{ ERW:363, JCOE:43, SRM:8 } },
     pohangUsage:  { '구조용':141, '송유관':87, '재료관':76, '압력배관용':49, '일반배관용':20, '열교환기용':11, '유정용(케이싱)':5, '유정용(튜빙)':4, 'PILE':4, '기타구조용':3 },
     gunsanOrders: { total:108 },
     gunsanUsage:  { '압력배관용':44, '일반배관용':33, '구조용원형관':7, '재료관':7, '전선관':6, '연료가스배관용':5, '구조용':2 },
@@ -187,8 +194,13 @@ const DATA_STORE = {
           { name:'PM261', availH:354, avgH:14.75, days:24, targetProd:13.5, planProd:6.52, machineH:230.1, idleH:123.9, utilRate:65.0, rcFull:9, rcSize:0, planQty:1500 },
           { name:'PM262', availH:374, avgH:14.96, days:25, targetProd:15.5, planProd:22.92, machineH:261.8, idleH:112.2, utilRate:70.0, rcFull:5, rcSize:0, planQty:6000 }
         ],
-        pohangMainOrders: [],
-        pohangMarket: null,
+        pohangMainOrders: [
+          { code:'SEAH80CH',   od:'245',   dept:'수출1팀', customer:'SSA',         qty:0,    weight:5500, remark:'PM51' },
+          { code:'NX52MS',     od:'508',   dept:'수출1팀', customer:'EDGEN MURRAY', qty:0,    weight:6900, remark:'PM53' },
+          { code:'Z483C2X70M', od:'1,219', dept:'수출1팀', customer:'COMCO',       qty:70,   weight:450,  remark:'JCOE' },
+          { code:'Z483C2ATYH', od:'914',   dept:'수출1팀', customer:'VAN LEEUWEN', qty:1570, weight:9770, remark:'JCOE' }
+        ],
+        pohangMarket: { sijangpum:1280, erwPile:2500 },
         pohangOrders: { total:262, jokwan:{ ERW:193, JCOE:56, SRM:13 } },
         pohangUsage:  { '송유관':73, '압력배관용':59, '재료관':52, '일반배관용':25, '구조용':18, '기타구조용':11, 'PILE':6, '유정용(케이싱)':6, '유정용(튜빙)':3, '열교환기용':2 },
         gunsanOrders: { total:144 },
@@ -215,8 +227,15 @@ const DATA_STORE = {
           { name:'PM261', availH:202, avgH:9.62, days:21, targetProd:13.5, planProd:11.42, machineH:131.3, idleH:70.7, utilRate:65.0, rcFull:6, rcSize:0, planQty:1500 },
           { name:'PM262', availH:422, avgH:20.1, days:21, targetProd:15.5, planProd:17.77, machineH:337.6, idleH:84.4, utilRate:80.0, rcFull:0, rcSize:0, planQty:6000 }
         ],
-        pohangMainOrders: [],
-        pohangMarket: null,
+        pohangMainOrders: [
+          { code:'J55CQT',     od:'245',   dept:'수출1팀', customer:'SSA',                 qty:0,   weight:1200, remark:'PM51' },
+          { code:'NX60L2',     od:'610',   dept:'수출1팀', customer:'MRC GLOBAL',           qty:0,   weight:4000, remark:'PM53' },
+          { code:'NX65L2',     od:'762외', dept:'수출1팀', customer:'EDGEN MURRAY USA',     qty:600, weight:1690, remark:'JCOE' },
+          { code:'NX65L2',     od:'762외', dept:'수출1팀', customer:'IMPERIAL OIL',         qty:340, weight:2140, remark:'JCOE' },
+          { code:'NX52L2',     od:'914외', dept:'수출1팀', customer:'FERGUSON ENTERPRISES', qty:70,  weight:200,  remark:'JCOE' },
+          { code:'NX52L2 외',  od:'914외', dept:'수출1팀', customer:'SIXGEN TRADING',       qty:230, weight:1660, remark:'JCOE' }
+        ],
+        pohangMarket: { sijangpum:1000, erwPile:1500 },
         pohangOrders: { total:328, jokwan:{ ERW:272, JCOE:56, SRM:0 } },
         pohangUsage:  { '송유관':105, '구조용':68, '재료관':61, '압력배관용':39, '일반배관용':20, '열교환기용':10, 'PILE':9, '기타배관용':3, '연료가스배관용':2, '유정용(튜빙)':2 },
         gunsanOrders: { total:107 },
