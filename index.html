@@ -99,6 +99,18 @@ header .meta { font-size: 12px; opacity: 0.85; text-align: right; line-height: 1
   .summary-grid { grid-template-columns: repeat(2, 1fr); }
   .chart-grid { grid-template-columns: 1fr 1fr; }
 }
+/* 포항공장 주요오더 테이블 */
+.main-order-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.main-order-table th { background: #2c5f8a; color: #fff; padding: 7px 8px; text-align: center; font-weight: 600; white-space: nowrap; }
+.main-order-table td { padding: 6px 8px; text-align: center; border-bottom: 1px solid #eee; white-space: nowrap; }
+.main-order-table tr:hover td { background: #f5f8ff; }
+.main-order-table .code-col { font-weight: 700; color: #1a3c5e; text-align: left; }
+.main-order-table tfoot td { background: #eef3fa; font-weight: 700; color: #1a3c5e; }
+.market-cards { display: flex; gap: 12px; margin-top: 10px; }
+.market-card { flex: 1; background: #fff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.08); padding: 14px 18px; text-align: center; border-top: 4px solid #8e44ad; }
+.market-card.erw { border-top-color: #c0392b; }
+.market-card .m-label { font-size: 11px; color: #666; margin-bottom: 4px; letter-spacing: 0.5px; }
+.market-card .m-value { font-size: 24px; font-weight: 700; color: #1a3c5e; }
 @media (max-width: 768px) {
   header { padding: 10px 14px; flex-direction: column; align-items: flex-start; gap: 6px; }
   header h1 { font-size: 15px; }
@@ -147,6 +159,8 @@ const DATA_STORE = {
       { name:'PM461', availH:220.00, avgH:10.00, days:22, targetProd:13.50, planProd:10.49, machineH:143.00, idleH:77.00, utilRate:65.0, rcFull:7, rcSize:0, planQty:1500 },
       { name:'PM462', availH:252.00, avgH:9.69,  days:26, targetProd:15.50, planProd:12.21, machineH:163.80, idleH:88.20, utilRate:65.0, rcFull:8, rcSize:0, planQty:2000 }
     ],
+    pohangMainOrders: [],
+    pohangMarket: null,
     pohangOrders: { total:414, jokwan:{ ERW:363, JCOE:43, SRM:8 } },
     pohangUsage:  { '구조용':141, '송유관':87, '재료관':76, '압력배관용':49, '일반배관용':20, '열교환기용':11, '유정용(케이싱)':5, '유정용(튜빙)':4, 'PILE':4, '기타구조용':3 },
     gunsanOrders: { total:108 },
@@ -173,6 +187,8 @@ const DATA_STORE = {
           { name:'PM261', availH:354, avgH:14.75, days:24, targetProd:13.5, planProd:6.52, machineH:230.1, idleH:123.9, utilRate:65.0, rcFull:9, rcSize:0, planQty:1500 },
           { name:'PM262', availH:374, avgH:14.96, days:25, targetProd:15.5, planProd:22.92, machineH:261.8, idleH:112.2, utilRate:70.0, rcFull:5, rcSize:0, planQty:6000 }
         ],
+        pohangMainOrders: [],
+        pohangMarket: null,
         pohangOrders: { total:262, jokwan:{ ERW:193, JCOE:56, SRM:13 } },
         pohangUsage:  { '송유관':73, '압력배관용':59, '재료관':52, '일반배관용':25, '구조용':18, '기타구조용':11, 'PILE':6, '유정용(케이싱)':6, '유정용(튜빙)':3, '열교환기용':2 },
         gunsanOrders: { total:144 },
@@ -199,6 +215,8 @@ const DATA_STORE = {
           { name:'PM261', availH:202, avgH:9.62, days:21, targetProd:13.5, planProd:11.42, machineH:131.3, idleH:70.7, utilRate:65.0, rcFull:6, rcSize:0, planQty:1500 },
           { name:'PM262', availH:422, avgH:20.1, days:21, targetProd:15.5, planProd:17.77, machineH:337.6, idleH:84.4, utilRate:80.0, rcFull:0, rcSize:0, planQty:6000 }
         ],
+        pohangMainOrders: [],
+        pohangMarket: null,
         pohangOrders: { total:328, jokwan:{ ERW:272, JCOE:56, SRM:0 } },
         pohangUsage:  { '송유관':105, '구조용':68, '재료관':61, '압력배관용':39, '일반배관용':20, '열교환기용':10, 'PILE':9, '기타배관용':3, '연료가스배관용':2, '유정용(튜빙)':2 },
         gunsanOrders: { total:107 },
@@ -225,6 +243,16 @@ const DATA_STORE = {
           { name:'PM261', availH:250, avgH:9.62, days:26, targetProd:13.5, planProd:11.08, machineH:162.5, idleH:87.5, utilRate:65.0, rcFull:10, rcSize:0, planQty:1800 },
           { name:'PM262', availH:502, avgH:19.31, days:26, targetProd:15.5, planProd:17.68, machineH:401.6, idleH:100.4, utilRate:80.0, rcFull:0, rcSize:0, planQty:7100 }
         ],
+        pohangMainOrders: [
+          { code:'J55CQT',       od:'245',   dept:'수출1팀', customer:'SSA',             qty:0,   weight:1400, remark:'PM51' },
+          { code:'NX56L2KDD',    od:'610',   dept:'수출2팀', customer:'KOC',             qty:0,   weight:4200, remark:'PM53' },
+          { code:'Z448C2CESA',   od:'762외', dept:'수출1팀', customer:'CENOVUS',         qty:60,  weight:440,  remark:'JCOE' },
+          { code:'NX42L2 외',    od:'711외', dept:'수출1팀', customer:'COMCO PIPE',      qty:80,  weight:520,  remark:'JCOE' },
+          { code:'1C65C22-2 외', od:'762외', dept:'수출2팀', customer:'ADNOC ONSHORE',   qty:550, weight:4570, remark:'JCOE' },
+          { code:'N5LBL1',       od:'914외', dept:'수출1팀', customer:'FERGUSON',        qty:720, weight:1920, remark:'JCOE' },
+          { code:'2C60C22',      od:'914외', dept:'영업2팀', customer:'삼성이앤에이(주)', qty:100, weight:1100, remark:'JCOE' }
+        ],
+        pohangMarket: { sijangpum:1100, erwPile:2400 },
         pohangOrders: { total:426, jokwan:{ ERW:284, JCOE:142, SRM:0 } },
         pohangUsage:  { '압력배관용':153, '송유관':122, '일반배관용':55, '열교환기용':28, '재료관':22, '구조용':21, 'PILE':6, '가스공사':4, '연료가스배관용':2, '유정용(케이싱)':2 },
         gunsanOrders: { total:143 },
@@ -295,6 +323,13 @@ let chartUtil = null, chartPohangJokwan = null, chartPohangUsage = null, chartTr
     <div class="factory-section section-block">
       <div class="section-title">🏗 포항공장 설비 KPI <span class="badge">6 LINE</span></div>
       <div class="card" style="overflow-x:auto;"><table class="kpi-table" id="tablePohang"></table></div>
+    </div>
+
+    <!-- 포항공장 주요오더 -->
+    <div class="factory-section section-block" id="pohangMainOrderSection" style="display:none;">
+      <div class="section-title">&#128204; 포항공장 주요오더 <span class="badge" style="background:#2c5f8a;">수출&#183;영업</span></div>
+      <div class="card" style="overflow-x:auto;"><table class="main-order-table" id="tablePohangMainOrders"></table></div>
+      <div class="market-cards" id="pohangMarketCards"></div>
     </div>
 
     <!-- 군산 KPI -->
@@ -404,6 +439,7 @@ function renderDashboard(D) {
   buildTable('tablePohang', D.pohang);
   buildTable('tableGunsan', D.gunsan);
   buildTable('tableSuncheon', D.suncheon);
+  buildPohangMainOrders(D);
 
   buildOrderCard('orderPohang', '포항공장', D.pohangOrders, D.pohangUsage);
   buildOrderCard('orderGunsan', '군산공장', D.gunsanOrders, D.gunsanUsage);
@@ -474,6 +510,40 @@ function buildOrderCard(id, label, orders, usage) {
       `<div class="order-row"><span class="order-label">${k}</span><span class="order-val">${v}건</span></div>`).join('');
   }
   document.getElementById(id).innerHTML = html;
+}
+
+// ── 포항공장 주요오더 ──
+function buildPohangMainOrders(D) {
+  const section = document.getElementById('pohangMainOrderSection');
+  const tbl = document.getElementById('tablePohangMainOrders');
+  const marketDiv = document.getElementById('pohangMarketCards');
+  const orders = D.pohangMainOrders || [];
+  if (orders.length === 0) { section.style.display='none'; return; }
+  section.style.display='';
+  let html = '<thead><tr><th>기호</th><th>외경(&#934;)</th><th>부서</th><th>수주처</th><th>수량(PCS)</th><th>중량(MT)</th><th>비고</th></tr></thead><tbody>';
+  orders.forEach(function(o) {
+    html += '<tr>' +
+      '<td class="code-col">' + o.code + '</td>' +
+      '<td>' + o.od + '</td>' +
+      '<td>' + o.dept + '</td>' +
+      '<td>' + o.customer + '</td>' +
+      '<td>' + (o.qty > 0 ? o.qty.toLocaleString() : '&mdash;') + '</td>' +
+      '<td style="font-weight:700;">' + o.weight.toLocaleString() + '</td>' +
+      '<td><span style="background:#e8f0fa;color:#1a3c5e;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">' + o.remark + '</span></td>' +
+      '</tr>';
+  });
+  var tw = orders.reduce(function(s,o){return s+o.weight;},0);
+  var tq = orders.reduce(function(s,o){return s+o.qty;},0);
+  html += '</tbody><tfoot><tr><td colspan="4" style="text-align:right;">합 계</td><td>' + (tq>0?tq.toLocaleString():'&mdash;') + '</td><td>' + tw.toLocaleString() + '</td><td></td></tr></tfoot>';
+  tbl.innerHTML = html;
+  if (D.pohangMarket) {
+    marketDiv.innerHTML =
+      '<div class="market-card"><div class="m-label">&#127978; 시장품</div><div class="m-value">' + D.pohangMarket.sijangpum.toLocaleString() + '<span style="font-size:14px;font-weight:400"> t</span></div></div>' +
+      '<div class="market-card erw"><div class="m-label">ERW PILE</div><div class="m-value">' + D.pohangMarket.erwPile.toLocaleString() + '<span style="font-size:14px;font-weight:400"> t</span></div></div>';
+    marketDiv.style.display = 'flex';
+  } else {
+    marketDiv.style.display = 'none'; marketDiv.innerHTML = '';
+  }
 }
 
 // ── 차트 ──
