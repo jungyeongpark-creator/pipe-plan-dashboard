@@ -365,10 +365,8 @@ let chartUtil = null, chartPohangJokwan = null, chartPohangUsage = null, chartTr
 
     <!-- 오더 현황 -->
     <div class="section-title">📋 공장별 오더 현황</div>
-    <div class="order-grid">
+    <div class="order-grid" style="grid-template-columns:1fr;max-width:480px;">
       <div class="card order-card" id="orderPohang"></div>
-      <div class="card order-card" id="orderGunsan"></div>
-      <div class="card order-card" id="orderSuncheon"></div>
     </div>
 
     <div style="text-align:center;color:#aaa;font-size:11px;padding:12px 0;">
@@ -443,17 +441,17 @@ function renderDashboard(D) {
   document.getElementById('baseDate2').textContent = D.baseDate;
 
   makeSummaryCard('sumPohang', '포항공장 계획량', D.pohang, D.pohangOrders.total);
-  makeSummaryCard('sumGunsan', '군산공장 계획량', D.gunsan, D.gunsanOrders.total);
-  makeSummaryCard('sumSuncheon', '순천공장 계획량', D.suncheon, D.suncheonOrders.total);
+  makeSummaryCard('sumGunsan', '군산공장 계획량', D.gunsan, null);
+  makeSummaryCard('sumSuncheon', '순천공장 계획량', D.suncheon, null);
   const all = [...D.pohang, ...D.gunsan, ...D.suncheon];
   const totalQty = all.reduce((s,e)=>s+e.planQty,0);
   const totalMachH = all.reduce((s,e)=>s+e.machineH,0);
-  const totalOrders = D.pohangOrders.total + D.gunsanOrders.total + D.suncheonOrders.total;
+  const totalOrders = D.pohangOrders.total;
   const avgUtil = (all.reduce((s,e)=>s+e.utilRate,0)/all.length).toFixed(1);
   document.getElementById('sumTotal').innerHTML = `
     <div class="label">강관 전체 합계</div>
     <div class="value">${fmtI(totalQty)}<span style="font-size:14px;font-weight:400"> t</span></div>
-    <div class="sub">${all.length}Line | 총 ${totalMachH.toFixed(0)}h | 평균가동율 ${avgUtil}% | 오더 ${totalOrders}건</div>`;
+    <div class="sub">${all.length}Line | 총 ${totalMachH.toFixed(0)}h | 평균가동율 ${avgUtil}% | 포항 오더 ${totalOrders}건</div>`;
 
   buildTable('tablePohang', D.pohang);
   buildTable('tableGunsan', D.gunsan);
@@ -461,8 +459,7 @@ function renderDashboard(D) {
   buildPohangMainOrders(D);
 
   buildOrderCard('orderPohang', '포항공장', D.pohangOrders, D.pohangUsage);
-  buildOrderCard('orderGunsan', '군산공장', D.gunsanOrders, D.gunsanUsage);
-  buildOrderCard('orderSuncheon', '순천공장', D.suncheonOrders, null);
+
 
   renderUtilChart(D);
   renderPohangJokwanChart(D);
